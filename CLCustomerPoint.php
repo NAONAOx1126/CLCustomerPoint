@@ -81,7 +81,7 @@ class CLCustomerPoint extends SC_Plugin_Base {
     function uninstall($arrPlugin) {
         $objQuery = SC_Query_Ex::getSingletonInstance();
         // 顧客テーブルからカラム名を削除
-        $objQuery->query("ALTER TABLE  `dtb_customer` DROP  `point_customer_id`");
+        $objQuery->query("ALTER TABLE `dtb_customer` DROP `point_customer_id`");
     }
     
     /**
@@ -110,8 +110,17 @@ class CLCustomerPoint extends SC_Plugin_Base {
     
     function loadClassFile(&$plugin_class, &$plugin_classpath) {
     	// クラス処理の差し替え
-    	print_r($plugin_class);
-    	print_r($plugin_classpath);
+    	switch($plugin_class){
+    		case "SC_Helper_Customer_Ex":
+    			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Helper_Customer.php";
+    			break;
+    		case "SC_Helper_Purchase_Ex":
+    			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Helper_Purchase.php";
+    			break;
+    		case "SC_Customer_Ex":
+    			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Customer.php";
+    			break;
+    	}
     }
 
     /**

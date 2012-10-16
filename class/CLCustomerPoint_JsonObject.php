@@ -48,10 +48,12 @@ class CLCustomerPoint_JsonObject{
 			fputs($fp, "Content-Length: ".strlen($data)."\r\n");
 			fputs($fp, "\r\n");
 			fputs($fp, $data);
+			echo $data;
 			$response = "";
 			while(!feof($fp)){
 				$response .= fgets($fp, 4096);
 			}
+			echo $response;
 			fclose($fp);
 			$result = split("\r\n\r\n", $response, 2);
 			return json_decode($result[1]);

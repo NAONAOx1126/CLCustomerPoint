@@ -61,7 +61,9 @@ class CLCustomerPoint_CustomerPoint extends CLCustomerPoint_JsonObject{
 			$data["birthday"] = $customer["birth"];
 			$data["customer_type"] = $info["shop_name"];
 			$data["active_flg"] = "1";
+			print_r($data);
 			$result = $this->call("member", "RegisterCustomer", $data);
+			print_r($result);
 			// 登録後にポイントを更新
 			$objQuery->update("dtb_customer", array("point" => $result->point, "point_customer_id" => $result->customer_id), "customer_id = ?", array($customer["customer_id"]));
 			$customer["point_customer_id"] = $result->customer_id;
