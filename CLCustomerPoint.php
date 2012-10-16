@@ -53,10 +53,10 @@ class CLCustomerPoint extends SC_Plugin_Base {
         $masterData = new SC_DB_MasterData_Ex();
         $constants = $masterData->getMasterData("mtb_constants");
         if(!isset($constants["CL_CUSTOMER_POINT_HOST"])){
-	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_HOST", "member.dev.clay-system.jp", "連携するポイントシステムのホスト名");
+	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_HOST", "\"member.dev.clay-system.jp\"", "連携するポイントシステムのホスト名");
         }
         if(!isset($constants["CL_CUSTOMER_POINT_BASEDIR"])){
-	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_BASEDIR", "/", "連携するポイントシステムのベースディレクトリ");
+	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_BASEDIR", "\"/\"", "連携するポイントシステムのベースディレクトリ");
         }
 
         // キャッシュを再生成
