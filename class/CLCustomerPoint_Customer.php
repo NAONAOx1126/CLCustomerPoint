@@ -26,6 +26,6 @@ require_once(CLASS_REALDIR."SC_Customer.php");
  * @author Naohisa Minagawa
  * @version 1.0
  */
-class SC_Customer_Ex extends SC_Customer {
+class CLCustomerPoint_Customer extends SC_Customer {
 }
 ?>

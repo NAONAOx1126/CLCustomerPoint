@@ -26,6 +26,6 @@ require_once(CLASS_REALDIR."helper/SC_Helper_Purchase.php");
  * @author Naohisa Minagawa
  * @version 1.0
  */
-class SC_Helper_Purchase_Ex extends SC_Helper_Purchase {
+class CLCustomerPoint_Helper_Purchase extends SC_Helper_Purchase {
 }
 ?>

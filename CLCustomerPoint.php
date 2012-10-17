@@ -51,7 +51,10 @@ class CLCustomerPoint extends SC_Plugin_Base {
         
         // 定数マスタデータにデータを追加
         $masterData = new SC_DB_MasterData_Ex();
-        $constants = $masterData->getMasterData("mtb_constants");
+        $constants = $masterData->getDbMasterData("mtb_constants");
+        if(!isset($constants["CL_CUSTOMER_POINT_SERVER"])){
+	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_SERVER", "\"member.dev.clay-system.jp\"", "連携するポイントシステムのホスト名");
+        }
         if(!isset($constants["CL_CUSTOMER_POINT_HOST"])){
 	        $masterData->insertMasterData('mtb_constants', "CL_CUSTOMER_POINT_HOST", "\"member.dev.clay-system.jp\"", "連携するポイントシステムのホスト名");
         }
@@ -112,12 +115,15 @@ class CLCustomerPoint extends SC_Plugin_Base {
     	// クラス処理の差し替え
     	switch($plugin_class){
     		case "SC_Helper_Customer_Ex":
+    			$plugin_class = "CLCustomerPoint_Helper_Customer";
     			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Helper_Customer.php";
     			break;
     		case "SC_Helper_Purchase_Ex":
+    			$plugin_class = "CLCustomerPoint_Helper_Purchase";
     			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Helper_Purchase.php";
     			break;
     		case "SC_Customer_Ex":
+    			$plugin_class = "CLCustomerPoint_Customer";
     			$plugin_classpath = PLUGIN_UPLOAD_REALDIR."CLCustomerPoint/class/CLCustomerPoint_Customer.php";
     			break;
     	}

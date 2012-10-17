@@ -34,6 +34,7 @@ class CLCustomerPoint_JsonObject{
 		$protocol = "http";
 		$host = $constants["CL_CUSTOMER_POINT_HOST"];
 		$port = "80";
+		echo $host."<br>";
 		if(($fp = fsockopen($host, $port)) !== FALSE){
 			fputs($fp, "POST ".$constants["CL_CUSTOMER_POINT_BASEDIR"]."jsonp.php HTTP/1.0\r\n");
 			fputs($fp, "Host: ".$host."\r\n");
