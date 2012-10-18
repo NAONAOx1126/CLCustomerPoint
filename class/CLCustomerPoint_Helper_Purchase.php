@@ -36,16 +36,18 @@ class CLCustomerPoint_Helper_Purchase extends SC_Helper_Purchase {
 			$customer = $objQuery->getRow("*", "dtb_customer", "customer_id = ?", array($arrOrderOld['customer_id']));
 		
 	    	$server = new CLCustomerPoint_CustomerPoint();
+	        $site = SC_Helper_DB_Ex::sfGetBasisData();
+	        $shop_name = $site["shop_name"];
 
             // ▼使用ポイント
             // 変更前の対応状況が利用対象の場合、変更前の使用ポイント分を戻す
             if ($this->isUsePoint($arrOrderOld['status']) && !$this->isUsePoint($newStatus)) {
-				$customer = $server->changeRealPoint($customer, $arrOrderOld['use_point'], "EC受注（ID: ".$orderId."）利用ポイント戻し");
+				$customer = $server->changeRealPoint($customer, $arrOrderOld['use_point'], "EC【".$shop_name."】受注（ID: ".$orderId."）利用ポイント戻し");
             }
 
             // 変更後の対応状況が利用対象の場合、変更後の使用ポイント分を引く
             if (!$this->isUsePoint($arrOrderOld['status']) && $this->isUsePoint($newStatus)) {
-				$customer = $server->changeRealPoint($customer, - $arrOrderOld['use_point'], "EC受注（ID: ".$orderId."）利用ポイント");
+				$customer = $server->changeRealPoint($customer, - $arrOrderOld['use_point'], "EC【".$shop_name."】受注（ID: ".$orderId."）利用ポイント");
             }
 
             // ▲使用ポイント
@@ -53,12 +55,12 @@ class CLCustomerPoint_Helper_Purchase extends SC_Helper_Purchase {
             // ▼加算ポイント
             // 変更前の対応状況が加算対象の場合、変更前の加算ポイント分を戻す
             if ($this->isAddPoint($arrOrderOld['status']) && !$this->isAddPoint($newStatus)) {
-				$customer = $server->changeRealPoint($customer, - $arrOrderOld['add_point'], "EC受注（ID: ".$orderId."）加算ポイント戻し");
+				$customer = $server->changeRealPoint($customer, - $arrOrderOld['add_point'], "EC【".$shop_name."】受注（ID: ".$orderId."）加算ポイント戻し");
             }
 
             // 変更後の対応状況が加算対象の場合、変更後の加算ポイント分を足す
             if (!$this->isAddPoint($arrOrderOld['status']) && $this->isAddPoint($newStatus)) {
-				$customer = $server->changeRealPoint($customer, $arrOrderOld['add_point'], "EC受注（ID: ".$orderId."）加算ポイント");
+				$customer = $server->changeRealPoint($customer, $arrOrderOld['add_point'], "EC【".$shop_name."】受注（ID: ".$orderId."）加算ポイント");
             }
             // ▲加算ポイント
         }
