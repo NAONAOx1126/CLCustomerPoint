@@ -26,17 +26,18 @@
  */
 class CLCustomerPoint_JsonObject{
 	protected function call($package, $class, $params){
+		echo "call json start<br>";
         // マスタデータ
         $masterData = new SC_DB_MasterData_Ex();
-        // 職業マスタ
-        $constants = $masterData->getMasterData("mtb_constants");
         
 		$protocol = "http";
-		$host = $constants["CL_CUSTOMER_POINT_HOST"];
+		$server = $host = CL_CUSTOMER_POINT_HOST;
+		if(defined(CL_CUSTOMER_POINT_SERVER) && CL_CUSTOMER_POINT_SERVER != ""){
+			$server = CL_CUSTOMER_POINT_SERVER;
+		}
 		$port = "80";
-		echo $host."<br>";
-		if(($fp = fsockopen($host, $port)) !== FALSE){
-			fputs($fp, "POST ".$constants["CL_CUSTOMER_POINT_BASEDIR"]."jsonp.php HTTP/1.0\r\n");
+		if(($fp = fsockopen($server, $port)) !== FALSE){
+			fputs($fp, "POST ".CL_CUSTOMER_POINT_BASEDIR."jsonp.php HTTP/1.0\r\n");
 			fputs($fp, "Host: ".$host."\r\n");
 			fputs($fp, "User-Agent: CLAY-JSON-CALLER\r\n");
 			$data = "";
@@ -49,12 +50,10 @@ class CLCustomerPoint_JsonObject{
 			fputs($fp, "Content-Length: ".strlen($data)."\r\n");
 			fputs($fp, "\r\n");
 			fputs($fp, $data);
-			echo $data;
 			$response = "";
 			while(!feof($fp)){
 				$response .= fgets($fp, 4096);
 			}
-			echo $response;
 			fclose($fp);
 			$result = split("\r\n\r\n", $response, 2);
 			return json_decode($result[1]);

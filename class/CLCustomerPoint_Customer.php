@@ -20,12 +20,29 @@
 require_once(CLASS_REALDIR."SC_Customer.php");
 
 /**
- * ポイントシステム連携プラグインの顧客上書きクラス
+ * ポイントシステム連携プラグインの顧客上書きクラス.
  *
  * @package CLCustomerPoint
  * @author Naohisa Minagawa
  * @version 1.0
  */
-class CLCustomerPoint_Customer extends SC_Customer {
+class CLCustomerPoint_Customer extends SC_Customer{
+    function getCustomerDataFromEmailPass( $pass, $email, $mobile = false ) {
+    	$server = new CLCustomerPoint_CustomerPoint();
+    	$result = SC_Customer::getCustomerDataFromEmailPass( $pass, $email, $mobile );
+    	if($result){
+			$this->customer_data = $server->changeRealPoint($this->customer_data, 0, "");
+    	}
+    	return $result;
+    }
+
+    function getCustomerDataFromMobilePhoneIdPass($pass) {
+    	$server = new CLCustomerPoint_CustomerPoint();
+    	$result = SC_Customer::getCustomerDataFromEmailPass( $pass );
+    	if($result){
+			$this->customer_data = $server->changeRealPoint($this->customer_data, 0, "");
+    	}
+    	return $result;
+    }
 }
 ?>

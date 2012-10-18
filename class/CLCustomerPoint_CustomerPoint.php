@@ -31,44 +31,43 @@ class CLCustomerPoint_CustomerPoint extends CLCustomerPoint_JsonObject{
 	 * 顧客データをポイントシステム側に送信
 	 */
 	function registerRealCustomer($customer){
-			$data = array();
-	        // 店舗基本情報取得
-	        $info = SC_Helper_DB_Ex::sfGetBasisData();
-	        // マスタデータ
-	        $masterData = new SC_DB_MasterData_Ex();
-	        // 職業マスタ
-	        $jobs = $masterData->getMasterData("mtb_job");
-	        
-			// EC-CUBE側の顧客IDは顧客コードとして扱う
-			$data["customer_id"] = $customer["point_customer_id"];
-			$data["customer_code"] = $customer["customer_id"];
-			$data["sei"] = $customer["name01"];
-			$data["mei"] = $customer["name02"];
-			$data["sei_kana"] = $customer["kana01"];
-			$data["mei_kana"] = $customer["kana02"];
-			$data["zip1"] = $customer["zip01"];
-			$data["zip2"] = $customer["zip02"];
-			$data["pref"] = $customer["pref"];
-			$data["address1"] = $customer["addr01"];
-			$data["address2"] = $customer["addr02"];
-			$data["email"] = $customer["email"];
-			$data["email_mobile"] = $customer["email_mobile"];
-			$data["tel1"] = $customer["tel01"];
-			$data["tel2"] = $customer["tel02"];
-			$data["tel3"] = $customer["tel03"];
-			$data["sex"] = $customer["sex"];
-			$data["job"] = $jobs[$customer["job"]];
-			$data["birthday"] = $customer["birth"];
-			$data["customer_type"] = $info["shop_name"];
-			$data["active_flg"] = "1";
-			print_r($data);
-			$result = $this->call("member", "RegisterCustomer", $data);
-			print_r($result);
-			// 登録後にポイントを更新
-			$objQuery->update("dtb_customer", array("point" => $result->point, "point_customer_id" => $result->customer_id), "customer_id = ?", array($customer["customer_id"]));
-			$customer["point_customer_id"] = $result->customer_id;
-			$customer["point"] = $result->point;
-			return $customer;
+		$data = array();
+        // 店舗基本情報取得
+        $info = SC_Helper_DB_Ex::sfGetBasisData();
+        // マスタデータ
+        $masterData = new SC_DB_MasterData_Ex();
+        // 職業マスタ
+        $jobs = $masterData->getMasterData("mtb_job");
+        
+		// EC-CUBE側の顧客IDは顧客コードとして扱う
+		$data["customer_id"] = $customer["point_customer_id"];
+		$data["customer_code"] = $customer["customer_id"];
+		$data["sei"] = $customer["name01"];
+		$data["mei"] = $customer["name02"];
+		$data["sei_kana"] = $customer["kana01"];
+		$data["mei_kana"] = $customer["kana02"];
+		$data["zip1"] = $customer["zip01"];
+		$data["zip2"] = $customer["zip02"];
+		$data["pref"] = $customer["pref"];
+		$data["address1"] = $customer["addr01"];
+		$data["address2"] = $customer["addr02"];
+		$data["email"] = $customer["email"];
+		$data["email_mobile"] = $customer["email_mobile"];
+		$data["tel1"] = $customer["tel01"];
+		$data["tel2"] = $customer["tel02"];
+		$data["tel3"] = $customer["tel03"];
+		$data["sex"] = $customer["sex"];
+		$data["job"] = $jobs[$customer["job"]];
+		$data["birthday"] = $customer["birth"];
+		$data["customer_type"] = $info["shop_name"];
+		$data["active_flg"] = "1";
+		$result = $this->call("member", "RegisterCustomer", $data);
+		// 登録後にポイントを更新
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+		$objQuery->update("dtb_customer", array("point" => $result->point, "point_customer_id" => $result->customer_id), "customer_id = ?", array($customer["customer_id"]));
+		$customer["point_customer_id"] = $result->customer_id;
+		$customer["point"] = $result->point;
+		return $customer;
 	}
 
 	/**
@@ -79,7 +78,7 @@ class CLCustomerPoint_CustomerPoint extends CLCustomerPoint_JsonObject{
         // 店舗基本情報取得
         $info = SC_Helper_DB_Ex::sfGetBasisData();
 		$result = $this->call("member", "AddPoint", array("customer_id" => $customer["point_customer_id"], "point" => $point, "comment" => $comment));
-		$objQuery = new SC_Query_Ex();
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
 		$objQuery->update("dtb_customer", array("point" => $result->point), "customer_id = ?", array($customer["customer_id"]));
 		$customer["point"] = $result->point;
 		return $customer;

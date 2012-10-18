@@ -31,7 +31,6 @@ class CLCustomerPoint_Helper_Customer extends SC_Helper_Customer{
     	echo "call plugin";
     	// 親クラスの呼び出し。
     	$customer_id = SC_Helper_Customer::sfEditCustomerData($array, $customer_id);
-    	echo $customer_id."<br>";
     	
     	// 登録した顧客データの取得
         $objQuery =& SC_Query_Ex::getSingletonInstance();

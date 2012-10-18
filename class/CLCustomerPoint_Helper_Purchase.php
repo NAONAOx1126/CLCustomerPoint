@@ -27,5 +27,41 @@ require_once(CLASS_REALDIR."helper/SC_Helper_Purchase.php");
  * @version 1.0
  */
 class CLCustomerPoint_Helper_Purchase extends SC_Helper_Purchase {
+    function sfUpdateOrderStatus($orderId, $newStatus = null, $newAddPoint = null, $newUsePoint = null, &$sqlval) {
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $arrOrderOld = $objQuery->getRow('status, add_point, use_point, customer_id', 'dtb_order', 'order_id = ?', array($orderId));
+      	SC_Helper_Purchase::sfUpdateOrderStatus($orderId, $newStatus, $newAddPoint, $newUsePoint, $sqlval);
+      	
+        if (USE_POINT !== false) {
+			$customer = $objQuery->getRow("*", "dtb_customer", "customer_id = ?", array($arrOrderOld['customer_id']));
+		
+	    	$server = new CLCustomerPoint_CustomerPoint();
+
+            // ▼使用ポイント
+            // 変更前の対応状況が利用対象の場合、変更前の使用ポイント分を戻す
+            if ($this->isUsePoint($arrOrderOld['status']) && !$this->isUsePoint($newStatus)) {
+				$customer = $server->changeRealPoint($customer, $arrOrderOld['use_point'], "EC受注（ID: ".$orderId."）利用ポイント戻し");
+            }
+
+            // 変更後の対応状況が利用対象の場合、変更後の使用ポイント分を引く
+            if (!$this->isUsePoint($arrOrderOld['status']) && $this->isUsePoint($newStatus)) {
+				$customer = $server->changeRealPoint($customer, - $arrOrderOld['use_point'], "EC受注（ID: ".$orderId."）利用ポイント");
+            }
+
+            // ▲使用ポイント
+
+            // ▼加算ポイント
+            // 変更前の対応状況が加算対象の場合、変更前の加算ポイント分を戻す
+            if ($this->isAddPoint($arrOrderOld['status']) && !$this->isAddPoint($newStatus)) {
+				$customer = $server->changeRealPoint($customer, - $arrOrderOld['add_point'], "EC受注（ID: ".$orderId."）加算ポイント戻し");
+            }
+
+            // 変更後の対応状況が加算対象の場合、変更後の加算ポイント分を足す
+            if (!$this->isAddPoint($arrOrderOld['status']) && $this->isAddPoint($newStatus)) {
+				$customer = $server->changeRealPoint($customer, $arrOrderOld['add_point'], "EC受注（ID: ".$orderId."）加算ポイント");
+            }
+            // ▲加算ポイント
+        }
+    }
 }
 ?>
