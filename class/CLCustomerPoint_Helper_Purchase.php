@@ -27,10 +27,20 @@ require_once(CLASS_REALDIR."helper/SC_Helper_Purchase.php");
  * @version 1.0
  */
 class CLCustomerPoint_Helper_Purchase extends SC_Helper_Purchase {
+    function cleanupSession($orderId, &$objCartSession, &$objCustomer, $cartKey) {
+    	// 受注データをポイントシステムに送信する。
+    	$server = new CLCustomerPoint_CustomerPoint();
+        $customer = $server->addOrder($orderId);
+    	
+    	// 親クラスの呼び出し。
+      	parent::cleanupSession($orderId, $objCartSession, $objCustomer, $cartKey);
+    }
+	
     function sfUpdateOrderStatus($orderId, $newStatus = null, $newAddPoint = null, $newUsePoint = null, &$sqlval) {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrOrderOld = $objQuery->getRow('status, add_point, use_point, customer_id', 'dtb_order', 'order_id = ?', array($orderId));
-      	SC_Helper_Purchase::sfUpdateOrderStatus($orderId, $newStatus, $newAddPoint, $newUsePoint, $sqlval);
+    	// 親クラスの呼び出し。
+      	parent::sfUpdateOrderStatus($orderId, $newStatus, $newAddPoint, $newUsePoint, $sqlval);
       	
         if (USE_POINT !== false) {
 			$customer = $objQuery->getRow("*", "dtb_customer", "customer_id = ?", array($arrOrderOld['customer_id']));

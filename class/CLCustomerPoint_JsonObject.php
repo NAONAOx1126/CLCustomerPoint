@@ -26,7 +26,6 @@
  */
 class CLCustomerPoint_JsonObject{
 	protected function call($package, $class, $params){
-		echo "call json start<br>";
         // マスタデータ
         $masterData = new SC_DB_MasterData_Ex();
         

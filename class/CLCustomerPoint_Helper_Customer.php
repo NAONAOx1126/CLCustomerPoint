@@ -28,9 +28,8 @@ require_once(CLASS_REALDIR."helper/SC_Helper_Customer.php");
  */
 class CLCustomerPoint_Helper_Customer extends SC_Helper_Customer{
     function sfEditCustomerData($array, $customer_id = null) {
-    	echo "call plugin";
     	// 親クラスの呼び出し。
-    	$customer_id = SC_Helper_Customer::sfEditCustomerData($array, $customer_id);
+    	$customer_id = parent::sfEditCustomerData($array, $customer_id);
     	
     	// 登録した顧客データの取得
         $objQuery =& SC_Query_Ex::getSingletonInstance();

@@ -83,5 +83,43 @@ class CLCustomerPoint_CustomerPoint extends CLCustomerPoint_JsonObject{
 		$customer["point"] = $result->point;
 		return $customer;
 	}
+
+	/**
+	 * 注文情報をポイントシステムに送信する。
+	 */
+	function addOrder($order_id, $point = null){
+        // 店舗基本情報取得
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $order = $objQuery->getRow("*", "dtb_order", "order_id = ?", array($order_id));
+        if($order["customer_id"] > 0){
+	        $customer = $objQuery->getRow("*", "dtb_customer", "customer_id = ?", array($order["customer_id"]));
+	        // 顧客IDをポイントシステム側のIDに設定
+	        $order["customer_id"] = $customer["point_customer_id"];
+	        // 下位のデータを追加
+	        $order["shippings"] = array();
+	        $shippings = $objQuery->select("*", "dtb_shipping", "order_id = ?", array($order_id));
+	        foreach($shippings as $shipping){
+	        	$shipping["details"] = array();
+		        $order["shippings"][$shipping["shipping_id"]] = $shipping;
+	        }
+	        $details = $objQuery->select("*", "dtb_shipment_item", "order_id = ?", array($order_id));
+	        foreach($details as $detail){
+	        	$order["shippings"][$detail["shipping_id"]]["details"][] = $detail;
+	        }
+	        
+	        $data = json_encode($order);
+	        if($point != null){
+				$result = $this->call("order", "AddOrder", array("order" => $data, "point" => $point));
+	        }else{
+				$result = $this->call("order", "AddOrder", array("order" => $data));
+	        }
+	        if(is_object($result)){
+				$objQuery->update("dtb_customer", array("point" => $result->point), "customer_id = ?", array($customer["customer_id"]));
+				$customer["point"] = $result->point;
+	        }
+			return $customer;
+        }
+        return null;
+	}
 }
 ?>

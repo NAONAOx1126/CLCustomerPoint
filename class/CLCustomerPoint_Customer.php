@@ -29,7 +29,8 @@ require_once(CLASS_REALDIR."SC_Customer.php");
 class CLCustomerPoint_Customer extends SC_Customer{
     function getCustomerDataFromEmailPass( $pass, $email, $mobile = false ) {
     	$server = new CLCustomerPoint_CustomerPoint();
-    	$result = SC_Customer::getCustomerDataFromEmailPass( $pass, $email, $mobile );
+    	// 親クラスの呼び出し。
+    	$result = parent::getCustomerDataFromEmailPass( $pass, $email, $mobile );
     	if($result){
 			$this->customer_data = $server->changeRealPoint($this->customer_data, 0, "");
     	}
@@ -38,7 +39,8 @@ class CLCustomerPoint_Customer extends SC_Customer{
 
     function getCustomerDataFromMobilePhoneIdPass($pass) {
     	$server = new CLCustomerPoint_CustomerPoint();
-    	$result = SC_Customer::getCustomerDataFromEmailPass( $pass );
+    	// 親クラスの呼び出し。
+    	$result = parent::getCustomerDataFromEmailPass( $pass );
     	if($result){
 			$this->customer_data = $server->changeRealPoint($this->customer_data, 0, "");
     	}
